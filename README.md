@@ -1,2 +1,2 @@
 # Asso
-Application de e-commerce basé sur une architecture microservice 
+Application de e-commerce basée sur une architecture microservice 
