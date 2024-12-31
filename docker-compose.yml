@@ -1,0 +1,25 @@
+services:
+  produit-micros:
+    restart: always
+    build:
+
+      dockerfile: Dockerfile
+
+    ports:
+      - '8080:8080'
+    expose:
+      - '8080'
+    environment:
+      - SPRING_DATASOURCE_URL = jdbc:mysql://localhost:3307/produits_management
+      - SPRING_DATASOURCE_USERNAME = root
+    depends_on:
+      - db
+  db:
+    container_name : MysqlContainer
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD = root
+      - MYSQL_DATABASE = produits_management
+      - MYSQL_USER =  root
+      - MYSQL_PASSWORD = root
+
