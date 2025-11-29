@@ -1,0 +1,40 @@
+version: '3.3'
+
+services:
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: lea
+      POSTGRES_PASSWORD: utilisateurservice
+      POSTGRES_DB: serviceutilisateur
+    ports:
+      - "5434:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      - us_network
+
+  microservice:
+    build:
+      context: ./               # Dossier contenant le code et Dockerfile du microservice
+      dockerfile: Dockerfile
+    container_name: microservice_utilisateur           # Nom du conteneur du microservice
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/serviceutilisateur # URL de connexion à la BD
+      SPRING_DATASOURCE_USERNAME: lea          # Identifiant pour la BD
+      SPRING_DATASOURCE_PASSWORD: utilisateurservice # Mot de passe pour la BD
+    ports:
+      - "9091:9091"                            # Mapping du port local au port du conteneur
+    depends_on:
+      - postgres-db                            # Démarrage en priorité de PostgreSQL
+    networks:
+      - us_network
+
+volumes:
+  pg-data:
+
+networks:
+  us_network:
+    driver: bridge

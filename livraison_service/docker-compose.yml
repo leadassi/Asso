@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  django:
+    image: gestion_livraison  # Nom de l'image Docker pour ton backend Django REST
+    container_name: django_backend
+    build:
+      context: .  # Utilise le répertoire courant pour construire l'image
+    ports:
+      - "8001:8000"  # Expose le port 8000 de ton conteneur sur le port 8001 de ta machine hôte
+

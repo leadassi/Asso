@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mot de passe oublié</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Mot de passe oublié</h2>
+    <form th:action="@{/reconnexion}" th:method="post">
+        <div class="form-group">
+            <label for="email">Email :</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer le code</button>
+    </form>
+    <p th:if="${error}" class="text-danger" th:text="${error}"></p>
+</div>
+</body>
+</html>

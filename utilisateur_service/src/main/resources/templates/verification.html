@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Compte activé</title>
+</head>
+<body>
+    <h1>Vérification</h1>
+    <p>Bonjour {{nom}},</p>
+    <p>Prière de vous rediriger vers votre compte e-mail, pour obtenir le code de vérification.</p>
+    <p>Cordialement,</p>
+    <p>Asso.</p>
+
+    <form th:action="@{/verification}" th:method="post">
+        <input type="hidden" name="email" th:value="${email}" />
+        <label for="code">Entrez le code de vérification :</label>
+        <input type="number" id="code" name="code" required>
+        <button type="submit">Vérifier</button>
+    </form>
+
+</body>
+</html>

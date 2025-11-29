@@ -1,0 +1,256 @@
+version: '3.3'
+
+services:
+  # Micro-service produit
+  produit-micros:
+    container_name: produit-micros 
+    restart: always
+    image: jessicacarole/produitmicros_produit-micros:latest  # Remplacez par le nom de votre image
+    ports:
+      - '8080:8080'  # Port pour le microservice produit
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/produits_management
+      SPRING_DATASOURCE_USERNAME: sonia
+    depends_on:
+      - db
+    networks:
+      - us_network
+      - commande_net
+
+  # Micro-service paiement
+  paiement-service:
+    container_name: paiement-service
+    restart: always
+    image: sonianjumbe/paiement_paiement-service:latest  # Remplacez par le nom de votre image
+    ports:
+      - '9090:9090'  # Port pour le microservice paiement
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://payment-database:5445/gestionpaiementsasso
+      SPRING_DATASOURCE_USERNAME: sonia
+      SPRING_DATASOURCE_PASSWORD: caramelpsql2
+    depends_on:
+      - payment-database
+      - service-utilisateur
+      - microservice_commande
+    networks:
+      - us_network
+      - commande_net
+
+  # Base de donnees pour les produits     
+  db:
+    container_name: MysqlContainer
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: produits_management
+      MYSQL_USER: sonia
+      MYSQL_PASSWORD: caramel2
+    ports:
+      - '3307:3306'  # Port pour la base de donnees MySQL
+    networks:
+      - us_network
+      - commande_net
+
+  # Base de donnees pour le service de paiement
+  payment-database:
+    container_name: payment-database
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: sonia
+      POSTGRES_PASSWORD: caramelpsql2
+      POSTGRES_DB: gestionpaiementsasso
+    ports:
+      - '5446:5445'  # Port pour la base de données PostgreSQL
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - us_network
+      - commande_net
+
+  # Base de donnees pour le service utilisateur
+  postgres-userdb:
+    image: leajustine/postgres_db:latest
+    container_name: postgres-userdb
+    restart: always
+    environment:
+      POSTGRES_USER: lea
+      POSTGRES_PASSWORD: utilisateurservice
+      POSTGRES_DB: serviceutilisateur
+    ports:
+      - "5444:5432"  # Port pour la base de donnees utilisateur
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      - us_network
+      - commande_net
+
+  # Micro-service utilisateur
+  service-utilisateur:
+    container_name: service-utilisateur
+    restart: always
+    image: leajustine/microservice_utilisateur:latest  # Remplacez par le nom de votre image
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-userdb:5432/serviceutilisateur
+      SPRING_DATASOURCE_USERNAME: lea
+      SPRING_DATASOURCE_PASSWORD: utilisateurservice
+    ports:
+      - "9091:9091"  # Port pour le microservice utilisateur
+    depends_on:
+      - postgres-userdb
+    networks:
+      - us_network
+      - commande_net
+
+  # Base de donnees pour le service fournisseur
+  postgres-db-fournisseur:
+    image: postgres:latest
+    container_name: postgres-db-fournisseur
+    restart: always
+    environment:
+      POSTGRES_USER: lea
+      POSTGRES_PASSWORD: utilisateurservice
+      POSTGRES_DB: servicefournisseur
+    ports:
+      - "5441:5440"  # Port pour la base de donnees fournisseur
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      - us_network
+      - commande_net
+
+  # Micro-service fournisseur
+  microservice-fournisseur:
+    container_name: microservice-fournisseur
+    restart: always
+    image: leajustine/fournisseur_service:latest  # Remplacez par le nom de votre image
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db-fournisseur:5440/servicefournisseur
+      SPRING_DATASOURCE_USERNAME: lea
+      SPRING_DATASOURCE_PASSWORD: utilisateurservice
+    ports:
+      - "9095:9092"  # Port pour le microservice fournisseur
+    depends_on:
+      - postgres-db-fournisseur
+    networks:
+      - us_network
+      - commande_net
+
+  # Service Django
+  django:
+    image: dossivil/gestion_livraison:latest  # Nom de l'image Docker pour ton backend Django REST
+    container_name: django_backend
+    ports:
+      - "8001:8000"  # Expose le port 8000 de ton conteneur sur le port 8001 de ta machine hate
+    volumes:
+      - .:/app  # Monte le répertoire courant a /app dans le conteneur
+    depends_on:
+      - paiement-service
+      - microservice_commande
+    restart: always
+    networks:
+      - us_network
+      - commande_net
+
+  # Micro-service commande
+  microservice_commande:
+    container_name: microservice_commande
+    restart: always
+    image: imeldaktis/microservice_commande:latest  # Remplacez par le nom de votre image
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db_produits:3308/commande  # URL de connexion au conteneur MySQL existant
+      SPRING_DATASOURCE_USERNAME: root  # Identifiant MySQL
+      SPRING_DATASOURCE_PASSWORD:  
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update  # Mise a jour des tables automatiquement
+    ports:
+      - "9081:9081"  # Port pour le microservice
+    networks:
+      - us_network
+      - commande_net
+    depends_on:
+      - mysql-db      
+    restart: always
+
+  # Base de donnees pour les commandes
+  mysql-db:
+    image: mysql:8.0
+    container_name: gestion_cmd
+    environment:
+      MYSQL_ROOT_PASSWORD:  # Mot de passe root
+      MYSQL_DATABASE: commande        # Base de données a creer
+    ports:
+      - "3309:3308"  # Port pour MySQL
+    volumes:
+      - mysql-data:/var/lib/mysql  # Volume pour persister les donnees
+    networks:
+      - commande_net 
+      - us_network
+
+  # Frontend
+  frontend:
+    container_name: asso-front
+    restart: always
+    image: leajustine/asso-front:latest  # Remplacez par le nom de votre image
+    ports:
+      - "3000:3000"
+    depends_on:
+      - service-utilisateur
+      - microservice_commande
+      - microservice-fournisseur
+      - produit-micros 
+      - paiement-service
+    networks:
+      - us_network
+      - commande_net
+
+  # Service de recommandation
+  recommandation-service:
+    container_name: recommandation-service
+    image :  sonianjumbe/recommandationsystem_recommandation-service:latest
+    ports:
+      - '8082:8082'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://recommandation-database:5432/recommandationsdb
+      SPRING_DATASOURCE_USERNAME: sonia
+      SPRING_DATASOURCE_PASSWORD: caramelpsql2
+    depends_on:
+      - recommandation-database
+      - produit-micros
+    networks:
+      - us_network
+      - commande_net
+
+  # Base de donnees pour les recommandations
+  recommandation-database:
+    container_name: recommandation-database
+    restart: always
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: sonia
+      POSTGRES_PASSWORD: caramelpsql2
+      POSTGRES_DB: recommandationsdb
+    ports:
+      - "5436:5432"  # Port pour la base de donnees recommandations
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./recommandation_system/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - us_network
+      - commande_net
+
+volumes:
+  postgres_data:
+    driver: local
+  pg-data:
+    driver: local
+  sqlite_data:
+    driver: local
+  mysql-data:
+    driver: local
+
+networks:
+  us_network:
+    driver: bridge
+  commande_net:
+    driver: bridge

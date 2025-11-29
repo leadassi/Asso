@@ -1,0 +1,420 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API du microservice de gestion des paiements.",
+    "description": "Documentation pour l'API REST de paiement des commandes.",
+    "contact": {
+      "name": "Asso API",
+      "url": "https://exemple.com",
+      "email": "sonianj252@gmail.com"
+    },
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:9090",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/payments/{id}": {
+      "get": {
+        "tags": [
+          "payment-controller"
+        ],
+        "summary": "Rechercher un paiement avec son identifiant.",
+        "operationId": "getPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "payment-controller"
+        ],
+        "summary": "Mettre à jour des informations d'un paiment.",
+        "operationId": "updatePayment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Payment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/sendpayment": {
+      "post": {
+        "tags": [
+          "payment-controller"
+        ],
+        "summary": "Envoyer les informations d'un paiment.",
+        "description": "Envoie les informations d'un paiement ayant le statut ACCEPTED au service de livraison pour enclencher le processus de livraison de la commande.",
+        "operationId": "sendPayment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Payment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/savepayment": {
+      "post": {
+        "tags": [
+          "payment-controller"
+        ],
+        "summary": "Enregistrer les informations d'un paiment.",
+        "operationId": "savePayment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Payment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments": {
+      "get": {
+        "tags": [
+          "payment-controller"
+        ],
+        "summary": "Récupérer les informations sur tous les paiements initiés.",
+        "operationId": "getAllPayment",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Payment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/findbyorderid/{order_id}": {
+      "get": {
+        "tags": [
+          "payment-controller"
+        ],
+        "summary": "Rechercher un paiement avec l'identifiant de la commande.",
+        "operationId": "getPaymentByOrderId",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Payment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cinetpaypayments/{user_id}": {
+      "get": {
+        "tags": [
+          "cinet-pay-payment-controller"
+        ],
+        "summary": "Récupération des informations d'un utilisateur à partir de son identifiant.",
+        "description": "Récupère les informations de l'utilisateur à partir de son identifiant au service de gestion des utilisateurs et les ajoute à un objet contenant les informations nécessaires pour initier un paiement de sa facture totale.",
+        "operationId": "getCinetPayPaymentData",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CinetPayPaymentDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cinetpaydeliverypayments/{user_id}": {
+      "get": {
+        "tags": [
+          "cinet-pay-delivery-payment-controller"
+        ],
+        "summary": "Récupération des informations d'un utilisateur à partir de son identifiant.",
+        "description": "Récupère les informations de l'utilisateur à partir de son identifiant au service de gestion des utilisateurs et les ajoute à un objet contenant les informations nécessaires pour initier un paiement des frais de livraison sa facture.",
+        "operationId": "getCinetPayPaymentDeliveryData",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CinetPayPaymentDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LocalTime": {
+        "type": "object",
+        "properties": {
+          "hour": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minute": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "second": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nano": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customer_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "payment_method": {
+            "type": "string",
+            "enum": [
+              "WALLET",
+              "MTNCM",
+              "ORANGECM",
+              "ON_DELIVERY",
+              "NULL"
+            ]
+          },
+          "payment_state": {
+            "type": "string",
+            "enum": [
+              "IN_PROGRESS",
+              "ACCEPTED",
+              "REFUSED",
+              "DELIVRED",
+              "NULL"
+            ]
+          },
+          "payment_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "payment_time": {
+            "$ref": "#/components/schemas/LocalTime"
+          }
+        }
+      },
+      "CinetPayPaymentDto": {
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "channels": {
+            "type": "string"
+          },
+          "transactionId": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerSurname": {
+            "type": "string"
+          },
+          "customerPhoneNumber": {
+            "type": "string"
+          },
+          "customerEmail": {
+            "type": "string"
+          },
+          "customerAddress": {
+            "type": "string"
+          },
+          "customerCity": {
+            "type": "string"
+          },
+          "customerZipCode": {
+            "type": "string"
+          },
+          "siteId": {
+            "type": "string"
+          },
+          "idPaiement": {
+            "type": "string"
+          },
+          "returnUrl": {
+            "type": "string"
+          },
+          "notifyUrl": {
+            "type": "string"
+          },
+          "customerCountry": {
+            "type": "string"
+          },
+          "customerState": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

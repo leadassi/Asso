@@ -1,0 +1,95 @@
+.form-container {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input:focus {
+  outline: none;
+  border-color: #0078d7;
+  box-shadow: 0 0 5px rgba(0, 120, 215, 0.5);
+}
+
+.form-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #D97706;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.form-button:hover {
+  background-color: #b45309;
+}
+
+#map {
+  height: 500px;
+  margin: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+}
+
+
+.distance-display {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #333;
+}
+
+.distance-value {
+  font-weight: bold;
+  color: red;
+}
+.suggestions-list {
+  position: absolute;
+  max-height: 150px; /* Limite la hauteur */
+  width: 26%; /* Adapte la largeur au champ */
+  overflow-y: auto; /* Ajoute un défilement si nécessaire */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  z-index: 1000; /* Assure que la liste reste au-dessus */
+  margin-top: 5px;
+  margin-right: 1000000px;
+  padding: 0;
+  list-style: none;
+}
+
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}

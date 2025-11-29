@@ -1,0 +1,23 @@
+version: '3.3'
+
+services:
+  microservice:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: microservice_commande
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://gestion_cmd:3306/commande # URL de connexion au conteneur MySQL existant
+      SPRING_DATASOURCE_USERNAME: root                             # Identifiant MySQL
+      SPRING_DATASOURCE_PASSWORD:              # Mot de passe MySQL
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update                       # Mise à jour des tables automatiquement
+    ports:
+      - "9081:9081"                                               # Port pour le microservice
+    networks:
+      - commande_net                                                # Réseau partagé avec MySQL existant
+    depends_on:
+      - mysql-db                                                  # Attente de MySQL (optionnel si MySQL est déjà opérationnel)
+
+networks:
+  us_network:
+    external: true                                                # Réseau déjà existant

@@ -1,0 +1,22 @@
+.sdk {
+    display: block;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    background-position: center;
+    text-align: center;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+button {
+    height: 40px;
+    width: 200px;
+    margin: 20px;
+    font-size: 14px;
+}
+
+h1 {
+    font-size: 45px;
+}

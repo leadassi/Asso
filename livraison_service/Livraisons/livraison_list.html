@@ -1,0 +1,9 @@
+{% extends "Livraison/base.html" %}
+{% block content %}
+    <h1>Liste des Livraisons</h1>
+    <ul>
+        {% for livraison in livraisons %}
+            <li>Livraison pour {{ livraison.livreur.nom }} - {{ livraison.date }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

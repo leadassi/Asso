@@ -1,0 +1,36 @@
+version: '3.3'
+
+services:
+  paiement-service:
+    container_name: paiement-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '9090:9090'
+    expose:
+      - '9090'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://payment-database:5432/gestionpaiementsasso
+      SPRING_DATASOURCE_USERNAME: sonia
+      SPRING_DATASOURCE_PASSWORD: caramelpsql2
+    depends_on:
+      - payment-database
+
+  payment-database:
+    container_name: payment-database
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: sonia
+      POSTGRES_PASSWORD: caramelpsql2
+      POSTGRES_DB: gestionpaiementsasso
+    ports:
+      - '5433:5432'
+    expose:
+      - '5433'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

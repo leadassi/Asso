@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://192.168.107.193:3000"
+            allowedHeaders:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowCredentials: true

@@ -1,0 +1,9 @@
+{% extends "Livraison/base.html" %}
+{% block content %}
+    <h1>Liste des Livreurs</h1>
+    <ul>
+        {% for livreur in livreurs %}
+            <li>{{ livreur.nom }} {{ livreur.prenom }} - {{ livreur.matricule }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

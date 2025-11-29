@@ -1,0 +1,186 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API de recommandation des produits basé sur la popularité.",
+    "description": "Documentation pour l'API REST de recommandation des produits.",
+    "contact": {
+      "name": "Asso API",
+      "url": "https://exemple.com",
+      "email": "sonianj252@gmail.com"
+    },
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8082",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/recommandations/saverecommandation": {
+      "post": {
+        "tags": [
+          "recommandation-controller"
+        ],
+        "summary": "Sauvegarder une note",
+        "description": "Enregistre en base de données la note d'un produit pour un tilisateur donné.",
+        "operationId": "saveRecmmandation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Recommandation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recommandation"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recommandations": {
+      "get": {
+        "tags": [
+          "recommandation-controller"
+        ],
+        "summary": "Retourne toutes les recommandations",
+        "description": "Retourne les 15 produits ayant obtenus la meilleure moyenne de votes.",
+        "operationId": "sendRecommandation",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recommandations/ratings/{productId}": {
+      "get": {
+        "tags": [
+          "recommandation-controller"
+        ],
+        "summary": "Obtenir la note d'un produit",
+        "description": "Retourne la moyenne des notes d'un produit en entrant son identifiant.",
+        "operationId": "sendProductRate",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number",
+                  "format": "float"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Recommandation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ProductDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "float"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "alimentaire",
+              "vetement",
+              "cosmetique"
+            ]
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "subCategory": {
+            "type": "string",
+            "enum": [
+              "homme",
+              "femme",
+              "enfant",
+              "aucune"
+            ]
+          },
+          "idFournisseur": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}

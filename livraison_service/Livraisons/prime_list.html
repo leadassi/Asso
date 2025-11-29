@@ -1,0 +1,9 @@
+{% extends "Livraison/base.html" %}
+{% block content %}
+    <h1>Primes des Livreurs</h1>
+    <ul>
+        {% for prime in primes %}
+            <li>{{ prime.livreur.nom }} - {{ prime.mois }} : {{ prime.montant }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

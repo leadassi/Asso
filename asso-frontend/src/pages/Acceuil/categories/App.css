@@ -1,0 +1,53 @@
+
+  /* Tableaux */
+  .table {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .table th, .table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .table th {
+    background-color: #D97706;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+  }
+  
+  .table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .table tr:hover {
+    background-color: #e0f7fa;
+  }
+  
+  .table td img {
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  
+  /* Réactivité */
+  @media (max-width: 768px) {
+    .table {
+      font-size: 0.9rem;
+    }
+  
+    .table th, .table td {
+      padding: 8px 10px;
+    }
+  
+    h1, h2 {
+      font-size: 1.5rem;
+    }
+  }
+  
